@@ -31,7 +31,7 @@ Route::prefix('v1')->middleware('auth:api')->group(function(){
         Route::get('all', 'CategoriaController@all');
         Route::get('get/{id}', 'CategoriaController@getById');
         Route::post('save', 'CategoriaController@save');
-        Route::post('delete', 'CategoriaController@delete');
+        Route::delete('delete/{id}', 'CategoriaController@delete');
     });
 
     //tematica
@@ -39,7 +39,7 @@ Route::prefix('v1')->middleware('auth:api')->group(function(){
         Route::get('all', 'TematicaController@all');
         Route::get('get/{id}', 'TematicaController@getById');
         Route::post('save', 'TematicaController@save');
-        Route::post('delete', 'TematicaController@delete');
+        Route::delete('delete/{id}', 'TematicaController@delete');
     });
 
     //soporte
@@ -47,7 +47,7 @@ Route::prefix('v1')->middleware('auth:api')->group(function(){
         Route::get('all', 'SoporteController@all');
         Route::get('get/{id}', 'SoporteController@getById');
         Route::post('save', 'SoporteController@save');
-        Route::post('delete', 'SoporteController@delete');
+        Route::delete('delete/{id}', 'SoporteController@delete');
     });
 
     //tecnica
@@ -55,14 +55,14 @@ Route::prefix('v1')->middleware('auth:api')->group(function(){
         Route::get('all', 'TecnicaController@all');
         Route::get('get/{id}', 'TecnicaController@getById');
         Route::post('save', 'TecnicaController@save');
-        Route::post('delete', 'TecnicaController@delete');
+        Route::delete('delete/{id}', 'TecnicaController@delete');
     });
 
     //obra
-    Route::prefix('obrra')->group(function() {
+    Route::prefix('obra')->group(function() {
         Route::get('all', 'ObraController@all');
         Route::get('get/{id}', 'ObraController@getById');
         Route::post('save', 'ObraController@save');
-        Route::post('delete', 'ObraController@delete');
+        Route::delete('delete/{id}', 'ObraController@delete');
     });
 });

@@ -9,7 +9,7 @@ class Obra extends Model
     protected  $table='obra';
 
     protected $fillable = [
-        'name','image'
+        'name','image','public_id','width', 'height'
     ];
 
     //categoria

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Model\Categoria;
 use App\Model\Obra;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,8 +17,15 @@ class ObraController extends Controller
         return Auth::guard('api');
     }
 
-    public function all(){
-        return Obra::paginate(20);
+    public function all(Request $request){
+        if(empty($request->query('query')) ||  $request->query('query')=='null'){
+            return Obra::with('categoria', 'soporte', 'tecnica', 'tematica')
+                ->simplePaginate(20);
+        }else{
+            return Obra::with('categoria', 'soporte', 'tecnica', 'tematica')
+                ->where('name', 'like', '%'.$request->query('query').'%')
+                ->simplePaginate(20);
+        }
     }
 
     public function getById($id){
@@ -49,23 +57,56 @@ class ObraController extends Controller
             if(!empty($request->id)){
                 $obra = Obra::find($request->id);
                 $obra->name = $request->name;
+                $obra->width = $request->width;
+                $obra->height = $request->height;
+                $obra->categoria_id = $request->categoria;
+                $obra->soporte_id = $request->soporte;
+                $obra->tecnica_id = $request->tecnica;
+                $obra->tematica_id = $request->tematica;
 
                 $file = $request->file;
-                Cloudder::upload($file, null);
-                $image_url= Cloudder::secureShow(Cloudder::getPublicId(),
-                    array("width" => 362, "height" => 204, "crop" => "fill"));
+                if(!empty($file)){
+                    //eliminados la q esta arriba
+                    Cloudder::delete($obra->public_id, null);
 
-                $obra->image = $image_url;
-                $obra->public_id = Cloudder::getPublicId();
+                    //add new
+                    Cloudder::upload($file, null);
+                    $w = 200;
+                    $h = 200;
+                    if($request->width < $request->height){
+                        $w = 200;
+                        $h = 200;
+                    }
+
+                    $image_url= Cloudder::secureShow(Cloudder::getPublicId(),
+                        array("width" => $w, "height" => $h, "crop" => "fit"));
+
+                    $obra->image = $image_url;
+                    $obra->public_id = Cloudder::getPublicId();
+                }
+
+
                 $obra->save();
             }else{
                 $obra = new Obra();
                 $obra->name = $request->name;
+                $obra->width = $request->width;
+                $obra->height = $request->height;
+                $obra->categoria_id = $request->categoria;
+                $obra->soporte_id = $request->soporte;
+                $obra->tecnica_id = $request->tecnica;
+                $obra->tematica_id = $request->tematica;
 
                 $file = $request->file;
                 Cloudder::upload($file, null);
+                $w = 200;
+                $h = 200;
+                if($request->width < $request->height){
+                    $w = 200;
+                    $h = 200;
+                }
                 $image_url= Cloudder::secureShow(Cloudder::getPublicId(),
-                    array("width" => 362, "height" => 204, "crop" => "fill"));
+                    array("width" => $w, "height" => $h, "crop" => "fill"));
 
                 $obra->image = $image_url;
                 $obra->public_id = Cloudder::getPublicId();
